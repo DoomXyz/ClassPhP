@@ -1,42 +1,44 @@
 <?php
+// Khởi tạo session
 session_start();
-require_once 'app/models/ProductModel.php';
-// Product/add
+
+// Require các file cần thiết
+require_once 'app/helpers/SessionHelper.php';
+
+// Lấy URL từ query string
 $url = $_GET['url'] ?? '';
-$url = rtrim($url, '/');
-$url = filter_var($url, FILTER_SANITIZE_URL);
-$url = explode('/', $url);
+$url = rtrim($url, '/'); // Xóa dấu / ở cuối
+$url = filter_var($url, FILTER_SANITIZE_URL); // Làm sạch URL
+$urlParts = explode('/', $url); // Chia URL thành các phần
 
+// Xác định controller từ phần đầu tiên của URL
+$controllerName = isset($urlParts[0]) && $urlParts[0] != '' ? ucfirst($urlParts[0]) . 'Controller' : 'ProductController';
 
-// Kiểm tra phần đầu tiên của URL để xác định controller
-$controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'DefaultController';
+// Xác định action từ phần thứ hai của URL
+$action = isset($urlParts[1]) && $urlParts[1] != '' ? $urlParts[1] : 'index';
 
-
-// Kiểm tra phần thứ hai của URL để xác định action
-$action = isset($url[1]) && $url[1] != '' ? $url[1] : 'index';
-
-
-// die ("controller=$controllerName - action=$action");
-
-
-// Kiểm tra xem controller và action có tồn tại không
-if (!file_exists('app/controllers/' . $controllerName . '.php')) {
-    // Xử lý không tìm thấy controller
-    die('Controller not found');
+// Kiểm tra xem file controller có tồn tại không
+$controllerFile = 'app/controllers/' . $controllerName . '.php';
+if (!file_exists($controllerFile)) {
+    // Nếu không tìm thấy controller, hiển thị trang lỗi 404
+    header('HTTP/1.1 404 Not Found');
+    include 'app/views/errors/404.php';
+    exit();
 }
 
+// Require file controller
+require_once $controllerFile;
 
-require_once 'app/controllers/' . $controllerName . '.php';
-
-
+// Khởi tạo controller
 $controller = new $controllerName();
 
-
+// Kiểm tra xem action có tồn tại trong controller không
 if (!method_exists($controller, $action)) {
-    // Xử lý không tìm thấy action
-    die('Action not found');
+    // Nếu không tìm thấy action, hiển thị trang lỗi 404
+    header('HTTP/1.1 404 Not Found');
+    include 'app/views/errors/404.php';
+    exit();
 }
 
-
 // Gọi action với các tham số còn lại (nếu có)
-call_user_func_array([$controller, $action], array_slice($url, 2));
+call_user_func_array([$controller, $action], array_slice($urlParts, 2));

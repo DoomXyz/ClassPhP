@@ -7,6 +7,7 @@
     <title>Quản lý sản phẩm</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
     /* Base Styles */
     body {
@@ -25,7 +26,6 @@
 
     .navbar.fixed-top {
         z-index: 1030;
-        /* Đảm bảo navbar luôn ở trên cùng */
     }
 
     .navbar-brand,
@@ -102,6 +102,12 @@
     .container {
         padding: 20px;
     }
+
+    .text-danger {
+        display: block;
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
     </style>
 </head>
 
@@ -135,6 +141,22 @@
                     <a class="nav-link" href="/webbanhang/Product/cart">
                         <i class="fas fa-shopping-cart"></i> Giỏ hàng
                     </a>
+                </li>
+                <li class="nav-item">
+                    <?php
+                    if (SessionHelper::isLoggedIn()) {
+                        echo "<a class='nav-link' href='/webbanhang/account/profile'><i class='fas fa-user'></i> " . htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8') . "</a>";
+                    } else {
+                        echo "<a class='nav-link' href='/webbanhang/account/login'><i class='fas fa-sign-in-alt'></i> Login</a>";
+                    }
+                    ?>
+                </li>
+                <li class="nav-item">
+                    <?php
+                    if (SessionHelper::isLoggedIn()) {
+                        echo "<a class='nav-link' href='/webbanhang/account/logout'><i class='fas fa-sign-out-alt'></i> Logout</a>";
+                    }
+                    ?>
                 </li>
             </ul>
         </div>
