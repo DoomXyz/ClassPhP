@@ -1,5 +1,4 @@
 <?php
-// Require SessionHelper and other necessary files
 require_once('app/config/database.php');
 require_once('app/models/ProductModel.php');
 require_once('app/models/CategoryModel.php');
@@ -176,7 +175,7 @@ class ProductController
             $cart = $_SESSION['cart'];
             $totalPrice = 0;
             foreach ($cart as $item) {
-                $totalPrice += $item['price'] * $item['quantity']; // Tính tổng giá toàn bộ giỏ hàng
+                $totalPrice += $item['price'] * $item['quantity'];
             }
 
             $this->db->beginTransaction();

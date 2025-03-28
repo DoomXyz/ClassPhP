@@ -27,6 +27,7 @@ if (!file_exists($controllerFile)) {
 }
 
 // Require file controller
+var_dump($controllerName, $action); 
 require_once $controllerFile;
 
 // Khởi tạo controller
